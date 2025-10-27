@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /pdms/
+
+    # Block direct access to certain directories
+    RedirectMatch 403 ^/(application|system|\.git|\.hg|\.svn|cache).*$
+
+    # If the request is not an existing file or directory, redirect to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>

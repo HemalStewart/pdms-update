@@ -1,0 +1,365 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/* * *****************Classes.php**********************************
+ * @product name    : PDMS
+ * @type            : Class
+ * @class name      : Classes
+ * @description     : Manage academic class.  
+ * @author          : Rameca Team 	
+ * @url             : https://www.ramecats.lk     
+ * @support         : info@ramecats.lk	
+ * @copyright       : All Rights Reserved. Design & Developed by Rameca Technology Solutions	
+ * ********************************************************** */
+
+class Classes extends MY_Controller {
+
+    public $data = array();
+
+    function __construct() {
+        parent::__construct();
+        $this->load->model('Classes_Model', 'classes', true);
+
+        $this->load->model('Ajax_Model', 'ajax', true);
+        $listprovincial = $this->ajax->listprovincial();
+        $this->data['listprovincial'] = $listprovincial;
+    }
+
+    /*     * ***************Function index**********************************
+     * @type            : Function
+     * @function name   : index
+     * @description     : load "class listing" in user interface
+     *                       
+     * @param           : null 
+     * @return          : null 
+     * ********************************************************** */
+
+    public function index() {
+        $this->output->delete_cache();
+        check_permission(VIEW);
+
+        // for super admin 
+        $province_id = '';
+        $district_id = '';
+        $zonal_id = '';
+        $edu_id = '';
+        $schooln_id = '';
+
+        // $schooln_id = '';
+        if ($_POST) {
+
+            $province_id = $this->input->post('provincial_id');
+            $district_id = $this->input->post('district_id');
+            $zonal_id = $this->input->post('zonal_id');
+            $edu_id = $this->input->post('edu_id');
+            //  $school_id = $this->input->post('schooln_id');
+            $schooln_id = $this->input->post('schooln_id');
+        }
+
+        //  $this->data['class_id'] = $class_id;
+        $this->data['filter_district_id'] = $district_id;
+        $this->data['filter_prov_id'] = $province_id;
+        $this->data['filter_zonal_id'] = $zonal_id;
+        $this->data['filter_edu_id'] = $edu_id;
+        $this->data['filtern_school_id'] = $schooln_id;
+
+
+        $this->data['classes'] = $this->classes->get_class_list($province_id, $district_id, $zonal_id, $edu_id, $schooln_id);
+
+        $pirtype = $this->session->userdata('pirtype');
+        $listclass = $this->classes->listclassid($pirtype);
+        $this->data['listclass'] = $listclass;
+
+        $condition = array();
+        $condition['status'] = 1;
+        if ($this->session->userdata('role_id') != SUPER_ADMIN) {
+            $condition['school_id'] = $this->session->userdata('school_id');
+            $this->data['teachers'] = $this->classes->get_list('teachers', $condition, '', '', '', 'id', 'ASC');
+        }
+
+        if ($this->session->userdata('role_id') == PROVINCIAL) {
+            $province_id = $this->session->userdata('provincial_id');
+            $this->data['district'] = $this->classes->getdistrictData($province_id);
+        }
+
+        if ($this->session->userdata('role_id') == ZONAL) {
+            $zonal_id = $this->session->userdata('zonal_id');
+            $this->data['education'] = $this->classes->getzonalData($zonal_id);
+        }
+
+        $this->data['school_list'] = $this->classes->get_school_list($edu_id);
+        //  $this->data['filter_school_id'] = $school_id;
+        $this->data['schools'] = $this->schools;
+        $this->data['provincial'] = $this->provincial;
+
+        $this->data['list'] = TRUE;
+        $this->layout->title($this->lang->line('manage_class') . ' | ' . SMS);
+        $this->layout->view('class/index', $this->data);
+    }
+
+    /*     * ***************Function add**********************************
+     * @type            : Function
+     * @function name   : add
+     * @description     : load "add new class" user interface and 
+      process to save "new class" into database
+     *                       
+     * @param           : null 
+     * @return          : null 
+     * ********************************************************** */
+
+    public function add() {
+
+        check_permission(ADD);
+
+        if ($_POST) {
+            $this->_prepare_class_validation();
+            if ($this->form_validation->run() === TRUE) {
+                $data = $this->_get_posted_class_data();
+
+                $insert_id = $this->classes->insert('classes', $data);
+                if ($insert_id) {
+
+                    create_log('Has been created a class :' . $data['name']);
+
+                    success($this->lang->line('insert_success'));
+                    $this->__create_default_section($insert_id);
+                    redirect('academic/classes/index/' . $data['school_id']);
+                } else {
+                    error($this->lang->line('insert_failed'));
+                    redirect('academic/classes/add');
+                }
+            } else {
+                error($this->lang->line('insert_failed'));
+                $this->data['post'] = $_POST;
+            }
+        }
+
+        $pirtype = $this->session->userdata('pirtype');
+        $listclass = $this->classes->listclassid($pirtype);
+        $this->data['listclass'] = $listclass;
+        $this->data['classes'] = $this->classes->get_class_list();
+
+        $condition = array();
+        $condition['status'] = 1;
+        if ($this->session->userdata('role_id') != SUPER_ADMIN) {
+            $condition['school_id'] = $this->session->userdata('school_id');
+            $this->data['teachers'] = $this->classes->get_list('teachers', $condition, '', '', '', 'id', 'ASC');
+        }
+        $this->data['schools'] = $this->schools;
+
+        $this->data['add'] = TRUE;
+        $this->layout->title($this->lang->line('add') . ' | ' . SMS);
+        $this->layout->view('class/index', $this->data);
+    }
+
+    /*     * ***************Function edit**********************************
+     * @type            : Function
+     * @function name   : edit
+     * @description     : load "update class" user interface and
+      process to update "class" into database
+     *                       
+     * @param           : $id integetr value 
+     * @return          : null 
+     * ********************************************************** */
+
+    public function edit($id = null) {
+
+        check_permission(EDIT);
+
+        if (!is_numeric($id)) {
+            error($this->lang->line('unexpected_error'));
+            redirect('academic/classes/index');
+        }
+
+        if ($_POST) {
+            $this->_prepare_class_validation();
+            if ($this->form_validation->run() === TRUE) {
+                $data = $this->_get_posted_class_data();
+                $updated = $this->classes->update('classes', $data, array('id' => $this->input->post('id')));
+
+                if ($updated) {
+
+                    create_log('Has been updated a class :' . $data['name']);
+
+                    success($this->lang->line('update_success'));
+                    redirect('academic/classes/index/' . $data['school_id']);
+                } else {
+                    error($this->lang->line('update_failed'));
+                    redirect('academic/classes/edit/' . $this->input->post('id'));
+                }
+            } else {
+                error($this->lang->line('update_failed'));
+                $this->data['class'] = $this->classes->get_single('classes', array('id' => $this->input->post('id')));
+            }
+        }
+
+        if ($id) {
+            $this->data['class'] = $this->classes->get_single('classes', array('id' => $id));
+
+            if (!$this->data['class']) {
+                redirect('academic/classes/index');
+            }
+        }
+
+        $this->data['classes'] = $this->classes->get_class_list($this->data['class']->school_id);
+
+        $condition = array();
+        $condition['status'] = 1;
+        if ($this->session->userdata('role_id') != SUPER_ADMIN) {
+            $condition['school_id'] = $this->session->userdata('school_id');
+            $this->data['teachers'] = $this->classes->get_list('teachers', $condition, '', '', '', 'id', 'ASC');
+        }
+
+        $this->data['school_id'] = $this->data['class']->school_id;
+        $this->data['filter_school_id'] = $this->data['class']->school_id;
+        $this->data['schools'] = $this->schools;
+
+        $pirtype = $this->session->userdata('pirtype');
+        $listclass = $this->classes->listclassid($pirtype);
+        $this->data['listclass'] = $listclass;
+
+        $this->data['edit'] = TRUE;
+        $this->layout->title($this->lang->line('edit') . ' | ' . SMS);
+        $this->layout->view('class/index', $this->data);
+    }
+
+    /*     * ***************Function _prepare_class_validation**********************************
+     * @type            : Function
+     * @function name   : _prepare_class_validation
+     * @description     : Process "class" user input data validation
+     *                       
+     * @param           : null 
+     * @return          : null 
+     * ********************************************************** */
+
+    private function _prepare_class_validation() {
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<div class="error-message" style="color: red;">', '</div>');
+
+        $this->form_validation->set_rules('school_id', $this->lang->line('school_name'), 'trim|required');
+        $this->form_validation->set_rules('teacher_id', $this->lang->line('class_teacher'), 'trim|required');
+        // $this->form_validation->set_rules('numeric_name', $this->lang->line('numeric_name'), 'trim|required');
+        $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|callback_name');
+     //    $this->form_validation->set_rules('school_classesid', $this->lang->line('class'), 'trim|required');
+    }
+
+    /*     * ***************Function name**********************************
+     * @type            : Function
+     * @function name   : name
+     * @description     : unique check for "Class name"
+     *                       
+     * @param           : null 
+     * @return          : boolean true/flase 
+     * ********************************************************** */
+
+    public function name() {
+        if ($this->input->post('id') == '') {
+            $name = $this->classes->duplicate_check($this->input->post('school_id'), $this->input->post('name'));
+            if ($name) {
+                $this->form_validation->set_message('name', $this->lang->line('already_exist'));
+                return FALSE;
+            } else {
+                return TRUE;
+            }
+        } else if ($this->input->post('id') != '') {
+            $name = $this->classes->duplicate_check($this->input->post('school_id'), $this->input->post('name'), $this->input->post('id'));
+            if ($name) {
+                $this->form_validation->set_message('name', $this->lang->line('already_exist'));
+                return FALSE;
+            } else {
+                return TRUE;
+            }
+        }
+    }
+
+    /*     * ***************Function _get_posted_class_data**********************************
+     * @type            : Function
+     * @function name   : _get_posted_class_data
+     * @description     : Prepare "Class" user input data to save into database 
+     *                       
+     * @param           : null 
+     * @return          : $data array() value 
+     * ********************************************************** */
+
+    private function _get_posted_class_data() {
+
+        $items = array();
+        $items[] = 'school_id';
+        $items[] = 'teacher_id';
+        $items[] = 'school_classesid';
+        $items[] = 'name';
+        // $items[] = 'numeric_name';
+        $items[] = 'short_code';
+        $items[] = 'note';
+        $data = elements($items, $_POST);
+
+        if ($this->input->post('id')) {
+            $data['modified_at'] = date('Y-m-d H:i:s');
+            $data['modified_by'] = logged_in_user_id();
+        } else {
+            $data['status'] = 1;
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['created_by'] = logged_in_user_id();
+        }
+
+        return $data;
+    }
+
+    /*     * ***************Function delete**********************************
+     * @type            : Function
+     * @function name   : delete
+     * @description     : delete "class" data from database
+     *                       
+     * @param           : $id integer value
+     * @return          : null 
+     * ********************************************************** */
+
+    public function delete($id = null) {
+
+        check_permission(DELETE);
+
+        if (!is_numeric($id)) {
+            error($this->lang->line('unexpected_error'));
+            redirect('academic/classes/index');
+        }
+
+        $class = $this->classes->get_single('classes', array('id' => $id));
+
+        if ($this->classes->delete('classes', array('id' => $id))) {
+
+            create_log('Has been deleted a class : ' . $class->name);
+            success($this->lang->line('delete_success'));
+        } else {
+            error($this->lang->line('delete_failed'));
+        }
+        redirect('academic/classes/index/' . $class->school_id);
+    }
+
+    /*     * ***************Function __create_default_section**********************************
+     * @type            : Function
+     * @function name   : __create_default_section
+     * @description     : create default section while create a new class
+     *                       
+     * @param           : $insert_id integer value
+     * @return          : null 
+     * ********************************************************** */
+
+    private function __create_default_section($insert_id) {
+
+
+        $data = array();
+        $data['school_id'] = $this->input->post('school_id');
+//        $data['class_id'] = $insert_id;
+        $data['class_id'] = $this->input->post('school_classesid');
+        $data['teacher_id'] = $this->input->post('teacher_id');
+       // $data['school_classesid'] = $this->input->post('school_classesid');
+        $data['name'] = 'A';
+        $data['note'] = 'Default Section';
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $data['created_by'] = logged_in_user_id();
+        $data['status'] = 1;
+        $this->classes->insert('sections', $data);
+    }
+
+}

@@ -1,0 +1,11 @@
+.DS_Store
+/vendor/
+/node_modules/
+/assets/uploads/
+/dbackup/
+/documentation/assets/images/
+/documentation/assets/screenshots/
+/*.zip
+*.sql
+*.mp4
+*.pdf
