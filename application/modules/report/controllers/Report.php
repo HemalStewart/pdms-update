@@ -2740,6 +2740,103 @@ class Report extends My_Controller {
     $this->layout->view('pirivendetails/index', $data);
 }
 
+public function studsub() {
+    check_permission(VIEW);
+
+    // Get filter inputs
+    $province_id = $this->input->post('provincial_id') ?? '';
+    $district_id = $this->input->post('district_id') ?? '';
+    $zonal_id = $this->input->post('zonal_id') ?? '';
+    $edu_id = $this->input->post('edu_id') ?? '';
+
+    $this->data['provincial'] = $this->provincial;
+
+    // Pass filters to view
+    $this->data['filter_prov_id'] = $province_id;
+    $this->data['filter_district_id'] = $district_id;
+    $this->data['filter_zonal_id'] = $zonal_id;
+    $this->data['filter_edu_id'] = $edu_id;
+
+    // Fetch grade-wise aggregated data
+    $grade_sums = $this->report->get_grade_sums($province_id, $district_id, $zonal_id, $edu_id);
+
+    $this->data['grades'] = [
+        'R10o' => $grade_sums,
+        'R10i' => $grade_sums,
+        'R10ii' => $grade_sums,
+        'R10iii' => $grade_sums,
+        'R10iv' => $grade_sums,
+        'R10v' => $grade_sums,
+        'R10vi' => $grade_sums,
+        'R10vii' => $grade_sums,
+        'R10viii' => $grade_sums,
+        'R10ix' => $grade_sums,
+        'R10x' => $grade_sums,
+        'R10xi' => $grade_sums,
+        'R10xii' => $grade_sums,
+        'R10xiii' => $grade_sums,
+        'R10pS' => $grade_sums,
+        'R10pM' => $grade_sums,
+        'R10pE' => $grade_sums,
+        'R10Vtest' => $grade_sums,
+        'R10Deg' => $grade_sums,
+        'R10Other' => $grade_sums,
+
+       
+        // Continue for all prefixes...
+    ];
+
+    $this->data['report_url'] = site_url('report/studsub');
+
+    $this->layout->title($this->lang->line('student_sub_report') . ' | ' . SMS);
+    $this->layout->view('studsubjectreport/index', $this->data);
+}
+
+
+public function studcal() {
+    check_permission(VIEW);
+
+    // Get filter inputs
+    $province_id = $this->input->post('provincial_id') ?? '';
+    $district_id = $this->input->post('district_id') ?? '';
+    $zonal_id = $this->input->post('zonal_id') ?? '';
+    $edu_id = $this->input->post('edu_id') ?? '';
+
+    $this->data['provincial'] = $this->provincial;
+
+    // Pass filters to view
+    $this->data['filter_prov_id'] = $province_id;
+    $this->data['filter_district_id'] = $district_id;
+    $this->data['filter_zonal_id'] = $zonal_id;
+    $this->data['filter_edu_id'] = $edu_id;
+
+    // Fetch filtered data
+    $this->data['studcal'] = $this->report->get_stud_cal_report($province_id, $district_id, $zonal_id, $edu_id);
+
+    // Calculate totals in tfooter
+    $totals = $this->report->get_totals($province_id, $district_id, $zonal_id, $edu_id);
+    $this->data['totalMonk'] = $totals->totalMonk ?? 0;
+    $this->data['totalLay'] = $totals->totalLay ?? 0;
+    $this->data['totalCount'] = $totals->totalCount ?? 0;
+    $this->data['totalSin'] = $totals->totalSin ?? 0;
+    $this->data['totalPali'] = $totals->totalPali ?? 0;
+    $this->data['totalSan'] = $totals->totalSan ?? 0;
+    $this->data['totalThri'] = $totals->totalThri ?? 0;
+    $this->data['totalEng'] = $totals->totalEng ?? 0;
+    $this->data['totalMath'] = $totals->totalMath ?? 0;
+    $this->data['totalTam'] = $totals->totalTam ?? 0;
+    $this->data['totalHis'] = $totals->totalHis ?? 0;
+    $this->data['totalGeo'] = $totals->totalGeo ?? 0;
+    $this->data['totalSoc'] = $totals->totalSoc ?? 0;
+    $this->data['totalGen'] = $totals->totalGen ?? 0;
+    $this->data['totalHeal'] = $totals->totalHeal ?? 0;
+
+    $this->data['report_url'] = site_url('report/studcal');
+
+    $this->layout->title($this->lang->line('student_cal_report') . ' | ' . SMS);
+    $this->layout->view('studcalreport/index', $this->data);
+}
+
 
 }
 

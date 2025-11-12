@@ -64,22 +64,6 @@ class News extends MY_Controller {
         
          $this->data['provincial'] = $this->provincial;
 
-        $this->data['accessible_schools'] = array();
-        if ($this->session->userdata('role_id') == PROVINCIAL) {
-            $provincial_id = $this->session->userdata('provincial_id');
-            if (!empty($provincial_id)) {
-                $this->data['accessible_schools'] = $this->news->get_list(
-                    'schools',
-                    array('status' => 1, 'provincial' => $provincial_id),
-                    null,
-                    null,
-                    0,
-                    'school_name',
-                    'ASC'
-                );
-            }
-        }
-
         $this->data['news_list'] = $this->news->get_news_list($school_id); 
 //        $this->data['filter_school_id'] = $school_id;
         $this->data['schools'] = $this->schools;

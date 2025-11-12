@@ -22,43 +22,43 @@ class News_Model extends MY_Model {
 
     public function get_news_list($school_id = null){
 
-        
-
         $this->db->select('N.*, S.school_name,S.cencus_number');
-
         $this->db->from('student_cal AS N');
-
         $this->db->join('schools AS S', 'S.id = N.school_id', 'left');
 
-        
+        $role_id = $this->session->userdata('role_id');
 
-        if($this->session->userdata('role_id') != SUPER_ADMIN){
+        if($role_id == SUPER_ADMIN){
+
+            if($school_id){
+                $this->db->where('N.school_id', $school_id);
+            }
+
+        }elseif($role_id == PROVINCIAL){
+
+            $provincial_id = $this->session->userdata('provincial_id');
+            if(!empty($provincial_id)){
+                $this->db->where('S.provincial', $provincial_id);
+            }
+
+            if($school_id){
+                $this->db->where('N.school_id', $school_id);
+            }else{
+                $this->db->join('(SELECT MAX(id) AS latest_id FROM student_cal GROUP BY school_id) AS latest', 'latest.latest_id = N.id', 'inner');
+            }
+
+        }else{
 
             $this->db->where('N.school_id', $this->session->userdata('school_id'));
 
         }
 
-        
-
-        if($this->session->userdata('role_id') == SUPER_ADMIN && $school_id){
-
-            $this->db->where('N.school_id', $school_id);
-
-        }
-
         $this->db->where('S.status', 1);
-
         $this->db->order_by('N.id', 'DESC');
-
-        
 
         return $this->db->get()->result();
 
-        
-
     }
-
-    
 
     public function get_single_news($news_id){
 
@@ -103,4 +103,3 @@ class News_Model extends MY_Model {
 
 
 }
-

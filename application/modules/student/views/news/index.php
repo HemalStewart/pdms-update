@@ -70,11 +70,25 @@
 
                                 <select  class="form-control col-md-7 col-xs-12" id="filter_school_id" name="school_id"  style="width:auto;" onchange="this.form.submit();">
                                     <option value="select"><?php echo $this->lang->line('select_school') ?></option>
-                                </select>                    
+                                </select>
+                                <?php echo form_close(); ?>
 
+                            <?php } elseif ($this->session->userdata('role_id') == PROVINCIAL && !empty($accessible_schools)) { ?>
 
+                                <?php echo form_open(site_url('student/news/index/'), array('name' => 'filter', 'id' => 'filter', 'class' => 'form-horizontal form-label-left'), ''); ?>
+                                <select class="form-control col-md-7 col-xs-12" style="width:auto;" id="filter_school_id" name="school_id" onchange="this.form.submit();">
+                                    <option value=""><?php echo $this->lang->line('select_school'); ?></option>
+                                    <?php foreach ($accessible_schools as $obj) { ?>
+                                        <option value="<?php echo $obj->id; ?>" <?php
+                                        if (isset($filter_school_id) && $filter_school_id == $obj->id) {
+                                            echo 'selected="selected"';
+                                        }
+                                        ?>><?php echo $obj->school_name; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <?php echo form_close(); ?>
 
-                            <?php } echo form_close(); ?>
+                            <?php } ?>
 
                         </li>
                     </ul>
@@ -91,7 +105,7 @@
                                     <thead>
                                         <tr>
                                             <th><?php echo $this->lang->line('sl_no'); ?></th>
-                                            <?php if ($this->session->userdata('role_id') == SUPER_ADMIN) { ?>
+                                            <?php if (in_array($this->session->userdata('role_id'), array(SUPER_ADMIN, PROVINCIAL))) { ?>
                                                 <th><?php echo $this->lang->line('school'); ?></th>
                                             <?php } ?>
                                             <th><?php echo $this->lang->line('cencus_number'); ?></th>
@@ -108,7 +122,7 @@
                                             <?php foreach ($news_list as $obj) { ?>
                                                 <tr>
                                                     <td><?php echo $count++; ?></td>
-                                                    <?php if ($this->session->userdata('role_id') == SUPER_ADMIN) { ?>
+                                                    <?php if (in_array($this->session->userdata('role_id'), array(SUPER_ADMIN, PROVINCIAL))) { ?>
                                                         <td><?php echo $obj->school_name; ?></td>
                                                     <?php } ?>
                                                     <td><?php echo $obj->cencus_number; ?></td>

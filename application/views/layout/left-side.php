@@ -1574,6 +1574,7 @@
                                     <!--<li><a href="<?php echo site_url('report/statement'); ?>"><?php echo $this->lang->line('daily_statement_report'); ?></a></li>-->
 
                                 <li><a href="<?php echo site_url('report/examresult'); ?>"><?php echo $this->lang->line('exam_result_report'); ?></a></li>
+                                
 
                                 <?php if ($this->session->userdata('role_id') != ADMIN){
 								      if ($this->session->userdata('role_id') != GUARDIAN) {
@@ -1588,7 +1589,8 @@
                                 <li><a href="<?php echo site_url('report/planproc'); ?>"><?php echo $this->lang->line('planproc_report'); ?></a></li>
 
                                 <li><a href="<?php echo site_url('report/progressproc'); ?>"><?php echo $this->lang->line('progressproc_report'); ?></a></li>
-
+				<li><a href="<?php echo site_url('report/studsub'); ?>"><?php echo $this->lang->line('student_sub_report'); ?></a></li>
+                                <li><a href="<?php echo site_url('report/studcal'); ?>"><?php echo $this->lang->line('student_cal_report'); ?></a></li>
                                 <?php }
 								      }
 								      }

@@ -2778,6 +2778,134 @@ class Report_Model extends MY_Model {
         
         return $this->db->get()->result();
     }
+public function get_grade_sums($province_id = null, $district_id = null, $zonal_id = null, $edu_id = null) {
+        // Define grade prefixes and categories
+        $grades = [
+            '0_grade' => 'R10o',
+            '1_grade' => 'R10i',
+            '2_grade' => 'R10ii',
+            '3_grade' => 'R10iii',
+            '4_grade' => 'R10iv',
+            '5_grade' => 'R10v',
+            '6_grade' => 'R10vi',
+            '7_grade' => 'R10vii',
+            '8_grade' => 'R10viii',
+            '9_grade' => 'R10ix',
+            '10_grade' => 'R10x',
+            '11_grade' => 'R10xi',
+            '12_grade' => 'R10xii',
+            '13_grade' => 'R10xiii',
+            'pracheena_start' => 'R10pS',
+            'pracheena_mid' => 'R10pM',
+            'pracheena_end' => 'R10pE',
+            'v_v_test' => 'R10Vtest',
+            'degree' => 'R10Deg',
+            'other1' => 'R10Other',
+        ];
+   
+        $fields = ['monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal'];
+       
+        // Build the SELECT statement for sums
+        $select_fields = [];
+        foreach ($grades as $grade => $prefix) {
+            foreach ($fields as $field) {
+                $select_fields[] = "SUM(SC.{$prefix}{$field}) AS {$prefix}{$field}";
+            }
+        }
+   
+        $this->db->select(implode(', ', $select_fields));
+        $this->db->from('student_cal AS SC');
+        $this->db->join('schools AS S', 'S.id = SC.school_id', 'left');
+   
+        // Apply filters
+        if ($province_id) {
+            $this->db->where('S.provincial', $province_id);
+        }
+        if ($district_id) {
+            $this->db->where('S.district_id', $district_id);
+        }
+        if ($zonal_id) {
+            $this->db->where('S.zonal_id', $zonal_id);
+        }
+        if ($edu_id) {
+            $this->db->where('S.educational_id', $edu_id);
+        }
+   
+        // Ensure data integrity
+        $this->db->where('S.status', 1);
+   
+        return $this->db->get()->row();
+    }
+    
+   public function get_stud_cal_report($province_id = null, $district_id = null, $zonal_id = null, $edu_id = null) {
+        $this->db->select('SC.*, S.school_name, S.cencus_number,P.provincialname, DI.districtname, Z.zonename, ZB.zoneblock');
+        $this->db->from('student_cal AS SC');
+        $this->db->join('schools AS S', 'S.id = SC.school_id', 'left');
+        $this->db->join('provincial AS P', 'S.provincial = P.provincialid', 'left');
+        $this->db->join('district AS DI', 'S.district_id = DI.id', 'left');
+        $this->db->join('zone AS Z', 'S.zonal_id = Z.zoneid', 'left');
+        $this->db->join('zoneblock AS ZB', 'S.educational_id = ZB.zoneblockid', 'left');
+   
+        // Apply filters
+        if ($province_id) {
+            $this->db->where('S.provincial', $province_id);
+        }
+        if ($district_id) {
+            $this->db->where('S.district_id', $district_id);
+        }
+        if ($zonal_id) {
+            $this->db->where('S.zonal_id', $zonal_id);
+        }
+        if ($edu_id) {
+            $this->db->where('S.educational_id', $edu_id);
+        }
+   
+        // Ensure data integrity
+        $this->db->where('S.status', 1);
+   
+        // Fetch results
+        return $this->db->get()->result();
+    }
 
+   
+    public function get_totals($province_id = null, $district_id = null, $zonal_id = null, $edu_id = null) {
+        // Define the categories and prefixes for summation
+        $categories = ['monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal'];
+        $prefixes = ['R10o', 'R10i', 'R10ii', 'R10iii', 'R10iv', 'R10v', 'R10vi', 'R10vii', 'R10viii', 'R10ix', 'R10x', 'R10xi', 'R10xii', 'R10xiii', 'R10pS', 'R10pM', 'R10pE', 'R10Vtest', 'R10Deg', 'R10Other'];
+   
+        // Build the SUM fields dynamically
+        $select_fields = [];
+        foreach ($categories as $category) {
+            $sum_parts = [];
+            foreach ($prefixes as $prefix) {
+                $sum_parts[] = "SUM(SC.{$prefix}{$category})";
+            }
+            $select_fields[] = implode(' + ', $sum_parts) . " AS total" . ucfirst($category);
+        }
+        $this->db->select(implode(', ', $select_fields));
+   
+        $this->db->from('student_cal AS SC');
+        $this->db->join('schools AS S', 'S.id = SC.school_id', 'left');
+   
+        // Apply filters
+        if ($province_id) {
+            $this->db->where('S.provincial', $province_id);
+        }
+        if ($district_id) {
+            $this->db->where('S.district_id', $district_id);
+        }
+        if ($zonal_id) {
+            $this->db->where('S.zonal_id', $zonal_id);
+        }
+        if ($edu_id) {
+            $this->db->where('S.educational_id', $edu_id);
+        }
+   
+        // Ensure data integrity
+        $this->db->where('S.status', 1);
+   
+        // Fetch totals
+        return $this->db->get()->row();
+    } 
 }
 
