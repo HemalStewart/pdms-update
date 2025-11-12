@@ -30,11 +30,14 @@
         
         <!-- Font Awesome -->
         <link href="<?php echo VENDOR_URL; ?>font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    
-        <!-- Custom Theme Style -->
-        <?php if($this->school_setting->enable_rtl){ ?>
-            <link href="<?php echo CSS_URL; ?>rtl/custom-rtl.css" rel="stylesheet">             
-        <?php }elseif($this->global_setting->enable_rtl){ ?>
+        <?php
+            $school_enable_rtl = isset($this->school_setting) && is_object($this->school_setting) && !empty($this->school_setting->enable_rtl);
+            $global_enable_rtl = isset($this->global_setting) && is_object($this->global_setting) && !empty($this->global_setting->enable_rtl);
+        ?>
+        <!-- Custom Theme Style -->
+        <?php if($school_enable_rtl){ ?>
+            <link href="<?php echo CSS_URL; ?>rtl/custom-rtl.css" rel="stylesheet">             
+        <?php }elseif($global_enable_rtl){ ?>
             <link href="<?php echo CSS_URL; ?>rtl/custom-rtl.css" rel="stylesheet">             
         <?php }else{ ?>
             <link href="<?php echo CSS_URL; ?>custom.css" rel="stylesheet">

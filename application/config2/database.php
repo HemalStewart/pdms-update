@@ -188,4 +188,4 @@ $db['default']['username'] = 'root';
 
 $db['default']['password'] = 'weLove$trongmurapadaya2024';
 
-$db['default']['database'] = 'rameca_smsedu';
+$db['default']['database'] = 'pdms';

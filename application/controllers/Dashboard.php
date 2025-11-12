@@ -37,10 +37,10 @@ class Dashboard extends MY_Controller {
             
         
               // for super admin 
-        $province_id = '';
-        $district_id = '';
-        $zonaln_id = '';
-       // $edu_id = '';
+        $province_id = '';
+        $district_id = '';
+        $zonaln_id = '';
+        $edu_id = '';
        // $schooln_id = '';
         if ($_POST) {
 
