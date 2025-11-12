@@ -106,10 +106,12 @@
                                         <tr>
                                             <th><?php echo $this->lang->line('sl_no'); ?></th>
                                             <?php if (in_array($this->session->userdata('role_id'), array(SUPER_ADMIN, PROVINCIAL))) { ?>
+                                                <th><?php echo $this->lang->line('district'); ?></th>
+                                                <th><?php echo $this->lang->line('zonal'); ?></th>
                                                 <th><?php echo $this->lang->line('school'); ?></th>
                                             <?php } ?>
                                             <th><?php echo $this->lang->line('cencus_number'); ?></th>
-                                            <th><?php echo $this->lang->line('create'); ?></th>
+                                            <th><?php echo $this->lang->line('modified'); ?></th>
                                  
                                             <th><?php echo $this->lang->line('action'); ?></th>                                            
                                         </tr>
@@ -123,10 +125,12 @@
                                                 <tr>
                                                     <td><?php echo $count++; ?></td>
                                                     <?php if (in_array($this->session->userdata('role_id'), array(SUPER_ADMIN, PROVINCIAL))) { ?>
+                                                        <td><?php echo isset($obj->district_name) ? $obj->district_name : ''; ?></td>
+                                                        <td><?php echo isset($obj->zonal_name) ? $obj->zonal_name : ''; ?></td>
                                                         <td><?php echo $obj->school_name; ?></td>
                                                     <?php } ?>
                                                     <td><?php echo $obj->cencus_number; ?></td>
-                                                    <td><?php echo $obj->created_at; ?></td>
+                                                    <td><?php echo !empty($obj->modified_at) ? $obj->modified_at : $obj->created_at; ?></td>
                                                    
                                                    
                                                     <td>
@@ -1525,8 +1529,6 @@
         bindStudentCalForm("edit");
     })();
 </script>
-
-
 
 
 

@@ -22,9 +22,11 @@ class News_Model extends MY_Model {
 
     public function get_news_list($school_id = null){
 
-        $this->db->select('N.*, S.school_name,S.cencus_number');
+        $this->db->select('N.*, S.school_name, S.cencus_number, D.districtname AS district_name, Z.zonename AS zonal_name');
         $this->db->from('student_cal AS N');
         $this->db->join('schools AS S', 'S.id = N.school_id', 'left');
+        $this->db->join('district AS D', 'D.id = S.district_id', 'left');
+        $this->db->join('zone AS Z', 'Z.zoneid = S.zonal_id', 'left');
 
         $role_id = $this->session->userdata('role_id');
 
