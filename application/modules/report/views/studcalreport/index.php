@@ -46,10 +46,12 @@
                                 <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
-                                            <th rowspan="2"><?php echo $this->lang->line('sl_no'); ?></th>
-                                            <th rowspan="2"><?php echo $this->lang->line('school'); ?></th>
-                                            <th rowspan="2"><?php echo $this->lang->line('cencus_number'); ?></th>
-                                            <th rowspan="2"><?php echo $this->lang->line('grade1'); ?></th>
+                                            <th rowspan="2" data-priority="1"><?php echo $this->lang->line('sl_no'); ?></th>
+                                            <th rowspan="2" data-priority="2"><?php echo $this->lang->line('district'); ?></th>
+                                            <th rowspan="2" data-priority="3"><?php echo $this->lang->line('zonal'); ?></th>
+                                            <th rowspan="2" data-priority="4"><?php echo $this->lang->line('school'); ?></th>
+                                            <th rowspan="2" data-priority="5"><?php echo $this->lang->line('cencus_number'); ?></th>
+                                            <th rowspan="2" data-priority="6"><?php echo $this->lang->line('grade1'); ?></th>
                                             <th colspan="15"><?php echo $this->lang->line('stu_count'); ?></th>
                                         </tr>
                                         <tr>
@@ -65,9 +67,9 @@
                                             <th><?php echo $this->lang->line('tamil1'); ?></th>
                                             <th><?php echo $this->lang->line('history'); ?></th>
                                             <th><?php echo $this->lang->line('geography'); ?></th>
-                                            <th><?php echo $this->lang->line('social_s'); ?></th>
-                                            <th><?php echo $this->lang->line('general_s'); ?></th>
-                                            <th><?php echo $this->lang->line('health'); ?></th>
+                                            <th class="none" data-priority="100"><?php echo $this->lang->line('social_s'); ?></th>
+                                            <th class="none" data-priority="101"><?php echo $this->lang->line('general_s'); ?></th>
+                                            <th class="none" data-priority="102"><?php echo $this->lang->line('health'); ?></th>
                                         
                                         </tr>
                                     </thead>
@@ -81,6 +83,8 @@
                                         
                                               <tr>
                                             <td><?php echo $count++; ?></td>
+                                            <td><?php echo $obj->districtname; ?></td>
+                                            <td><?php echo $obj->zonename; ?></td>
                                             <td><?php echo $obj->school_name;?></td>
                                             <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('0_grade'); ?></td>
@@ -104,6 +108,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('1_grade'); ?></td>
@@ -127,6 +133,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('2_grade'); ?></td>
@@ -149,6 +157,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('3_grade'); ?></td>
@@ -171,6 +181,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('4_grade'); ?></td>
@@ -193,6 +205,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('5_grade'); ?></td>
@@ -215,6 +229,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('6_grade'); ?></td>
@@ -237,6 +253,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('7_grade'); ?></td>
@@ -259,6 +277,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('8_grade'); ?></td>
@@ -281,6 +301,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('9_grade'); ?></td>
@@ -303,6 +325,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('10_grade'); ?></td>
@@ -325,6 +349,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('11_grade'); ?></td>
@@ -347,6 +373,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('12_grade'); ?></td>
@@ -369,6 +397,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('13_grade'); ?></td>
@@ -392,6 +422,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('pracheena_start'); ?></td>
@@ -415,6 +447,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('pracheena_mid'); ?></td>
@@ -438,6 +472,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('pracheena_end'); ?></td>
@@ -461,6 +497,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('v_v_test'); ?></td>
@@ -483,6 +521,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('degree'); ?></td>
@@ -505,6 +545,8 @@
 
                                         <tr>
                                         <td><?php echo $count++; ?></td>
+                                        <td><?php echo $obj->districtname; ?></td>
+                                        <td><?php echo $obj->zonename; ?></td>
                                         <td><?php echo $obj->school_name;?></td>
                                         <td><?php echo $obj->cencus_number; ?></td>
                                             <td><?php echo $this->lang->line('other1'); ?></td>
@@ -533,6 +575,8 @@
 									
                                         <tr style="background-color: #e7e6e6;font-weight: 700;">
                                             <td><?php echo $this->lang->line('count'); ?></td>
+                                            <td>*</td>
+                                            <td>*</td>
                                             <td>*</td>
                                             <td>*</td>
                                             <td>*</td>
