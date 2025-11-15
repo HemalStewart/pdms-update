@@ -2744,10 +2744,14 @@ public function studsub() {
     check_permission(VIEW);
 
     // Get filter inputs
-    $province_id = $this->input->post('provincial_id') ?? '';
-    $district_id = $this->input->post('district_id') ?? '';
-    $zonal_id = $this->input->post('zonal_id') ?? '';
-    $edu_id = $this->input->post('edu_id') ?? '';
+    $province_id = $this->input->post('provincial_id');
+    $province_id = ($province_id !== null) ? $province_id : '';
+    $district_id = $this->input->post('district_id');
+    $district_id = ($district_id !== null) ? $district_id : '';
+    $zonal_id = $this->input->post('zonal_id');
+    $zonal_id = ($zonal_id !== null) ? $zonal_id : '';
+    $edu_id = $this->input->post('edu_id');
+    $edu_id = ($edu_id !== null) ? $edu_id : '';
 
     $this->data['provincial'] = $this->provincial;
 
@@ -2797,10 +2801,14 @@ public function studcal() {
     check_permission(VIEW);
 
     // Get filter inputs
-    $province_id = $this->input->post('provincial_id') ?? '';
-    $district_id = $this->input->post('district_id') ?? '';
-    $zonal_id = $this->input->post('zonal_id') ?? '';
-    $edu_id = $this->input->post('edu_id') ?? '';
+    $province_id = $this->input->post('provincial_id');
+    $province_id = ($province_id !== null) ? $province_id : '';
+    $district_id = $this->input->post('district_id');
+    $district_id = ($district_id !== null) ? $district_id : '';
+    $zonal_id = $this->input->post('zonal_id');
+    $zonal_id = ($zonal_id !== null) ? $zonal_id : '';
+    $edu_id = $this->input->post('edu_id');
+    $edu_id = ($edu_id !== null) ? $edu_id : '';
 
     $this->data['provincial'] = $this->provincial;
 
@@ -2815,21 +2823,24 @@ public function studcal() {
 
     // Calculate totals in tfooter
     $totals = $this->report->get_totals($province_id, $district_id, $zonal_id, $edu_id);
-    $this->data['totalMonk'] = $totals->totalMonk ?? 0;
-    $this->data['totalLay'] = $totals->totalLay ?? 0;
-    $this->data['totalCount'] = $totals->totalCount ?? 0;
-    $this->data['totalSin'] = $totals->totalSin ?? 0;
-    $this->data['totalPali'] = $totals->totalPali ?? 0;
-    $this->data['totalSan'] = $totals->totalSan ?? 0;
-    $this->data['totalThri'] = $totals->totalThri ?? 0;
-    $this->data['totalEng'] = $totals->totalEng ?? 0;
-    $this->data['totalMath'] = $totals->totalMath ?? 0;
-    $this->data['totalTam'] = $totals->totalTam ?? 0;
-    $this->data['totalHis'] = $totals->totalHis ?? 0;
-    $this->data['totalGeo'] = $totals->totalGeo ?? 0;
-    $this->data['totalSoc'] = $totals->totalSoc ?? 0;
-    $this->data['totalGen'] = $totals->totalGen ?? 0;
-    $this->data['totalHeal'] = $totals->totalHeal ?? 0;
+    $get_total = function ($property) use ($totals) {
+        return (isset($totals) && isset($totals->$property)) ? $totals->$property : 0;
+    };
+    $this->data['totalMonk'] = $get_total('totalMonk');
+    $this->data['totalLay'] = $get_total('totalLay');
+    $this->data['totalCount'] = $get_total('totalCount');
+    $this->data['totalSin'] = $get_total('totalSin');
+    $this->data['totalPali'] = $get_total('totalPali');
+    $this->data['totalSan'] = $get_total('totalSan');
+    $this->data['totalThri'] = $get_total('totalThri');
+    $this->data['totalEng'] = $get_total('totalEng');
+    $this->data['totalMath'] = $get_total('totalMath');
+    $this->data['totalTam'] = $get_total('totalTam');
+    $this->data['totalHis'] = $get_total('totalHis');
+    $this->data['totalGeo'] = $get_total('totalGeo');
+    $this->data['totalSoc'] = $get_total('totalSoc');
+    $this->data['totalGen'] = $get_total('totalGen');
+    $this->data['totalHeal'] = $get_total('totalHeal');
 
     $this->data['report_url'] = site_url('report/studcal');
 

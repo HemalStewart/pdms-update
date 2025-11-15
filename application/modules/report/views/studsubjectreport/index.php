@@ -79,7 +79,7 @@
             <td><?php echo $count++; ?></td>
             <td><?php echo $this->lang->line($grade_label); ?></td>
             <?php foreach ($fields as $field) { ?>
-                <td><?php echo number_format($data->{$grade_label . $field} ?? 0); ?></td>
+                <td><?php echo number_format(isset($data->{$grade_label . $field}) ? $data->{$grade_label . $field} : 0); ?></td>
             <?php } ?>
         </tr>
         <?php
