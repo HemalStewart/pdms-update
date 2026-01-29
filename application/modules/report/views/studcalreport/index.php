@@ -631,13 +631,13 @@
             {
                 extend: 'copyHtml5',
                 exportOptions: {
-                    columns: ':visible'
+                    columns: ':not(.not-exported)' // include hidden responsive columns (e.g., Social/General/Health)
                 }
             },
             {
                 extend: 'excelHtml5',
                 exportOptions: {
-                    columns: ':visible',
+                    columns: ':not(.not-exported)',
                     format: {
                         footer: function (row, data, start, end, display) {
                             // the footer data is included in the export
@@ -657,13 +657,13 @@
             {
                 extend: 'csvHtml5',
                 exportOptions: {
-                    columns: ':visible'
+                    columns: ':not(.not-exported)'
                 }
             },
             {
                 extend: 'pdfHtml5',
                 exportOptions: {
-                    columns: ':visible'
+                    columns: ':not(.not-exported)'
                 }
             },
             'pageLength'

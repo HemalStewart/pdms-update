@@ -2780,7 +2780,7 @@ class Report_Model extends MY_Model {
     }
 public function get_grade_sums($province_id = null, $district_id = null, $zonal_id = null, $edu_id = null) {
         // Define grade prefixes and categories
-        $grades = [
+        $grades = array(
             '0_grade' => 'R10o',
             '1_grade' => 'R10i',
             '2_grade' => 'R10ii',
@@ -2801,12 +2801,12 @@ public function get_grade_sums($province_id = null, $district_id = null, $zonal_
             'v_v_test' => 'R10Vtest',
             'degree' => 'R10Deg',
             'other1' => 'R10Other',
-        ];
+        );
    
-        $fields = ['monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal'];
+        $fields = array('monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal');
        
         // Build the SELECT statement for sums
-        $select_fields = [];
+        $select_fields = array();
         foreach ($grades as $grade => $prefix) {
             foreach ($fields as $field) {
                 $select_fields[] = "SUM(SC.{$prefix}{$field}) AS {$prefix}{$field}";
@@ -2869,14 +2869,14 @@ public function get_grade_sums($province_id = null, $district_id = null, $zonal_
 
    
     public function get_totals($province_id = null, $district_id = null, $zonal_id = null, $edu_id = null) {
-        // Define the categories and prefixes for summation
-        $categories = ['monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal'];
-        $prefixes = ['R10o', 'R10i', 'R10ii', 'R10iii', 'R10iv', 'R10v', 'R10vi', 'R10vii', 'R10viii', 'R10ix', 'R10x', 'R10xi', 'R10xii', 'R10xiii', 'R10pS', 'R10pM', 'R10pE', 'R10Vtest', 'R10Deg', 'R10Other'];
+        // Define the categories and prefixes for summation (PHP 5 compatible array syntax)
+        $categories = array('monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal');
+        $prefixes = array('R10o', 'R10i', 'R10ii', 'R10iii', 'R10iv', 'R10v', 'R10vi', 'R10vii', 'R10viii', 'R10ix', 'R10x', 'R10xi', 'R10xii', 'R10xiii', 'R10pS', 'R10pM', 'R10pE', 'R10Vtest', 'R10Deg', 'R10Other');
    
         // Build the SUM fields dynamically
-        $select_fields = [];
+        $select_fields = array();
         foreach ($categories as $category) {
-            $sum_parts = [];
+            $sum_parts = array();
             foreach ($prefixes as $prefix) {
                 $sum_parts[] = "SUM(SC.{$prefix}{$category})";
             }

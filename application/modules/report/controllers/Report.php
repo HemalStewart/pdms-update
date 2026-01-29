@@ -2727,7 +2727,7 @@ class Report extends My_Controller {
 */
 
     public function pirivendetails() {
-    $allowed_roles = [1,18,19,26,27,31,33,34,35,36]; // Use your specific role IDs.
+    $allowed_roles = array(1,18,19,26,27,31,33,34,35,36); // Use your specific role IDs.
     
     if (!in_array($this->session->userdata('role_id'), $allowed_roles)) {
         redirect('dashboard/index'); // Redirect to a safe page.
@@ -2764,7 +2764,7 @@ public function studsub() {
     // Fetch grade-wise aggregated data
     $grade_sums = $this->report->get_grade_sums($province_id, $district_id, $zonal_id, $edu_id);
 
-    $this->data['grades'] = [
+    $this->data['grades'] = array(
         'R10o' => $grade_sums,
         'R10i' => $grade_sums,
         'R10ii' => $grade_sums,
@@ -2788,7 +2788,7 @@ public function studsub() {
 
        
         // Continue for all prefixes...
-    ];
+    );
 
     $this->data['report_url'] = site_url('report/studsub');
 
@@ -2823,24 +2823,22 @@ public function studcal() {
 
     // Calculate totals in tfooter
     $totals = $this->report->get_totals($province_id, $district_id, $zonal_id, $edu_id);
-    $get_total = function ($property) use ($totals) {
-        return (isset($totals) && isset($totals->$property)) ? $totals->$property : 0;
-    };
-    $this->data['totalMonk'] = $get_total('totalMonk');
-    $this->data['totalLay'] = $get_total('totalLay');
-    $this->data['totalCount'] = $get_total('totalCount');
-    $this->data['totalSin'] = $get_total('totalSin');
-    $this->data['totalPali'] = $get_total('totalPali');
-    $this->data['totalSan'] = $get_total('totalSan');
-    $this->data['totalThri'] = $get_total('totalThri');
-    $this->data['totalEng'] = $get_total('totalEng');
-    $this->data['totalMath'] = $get_total('totalMath');
-    $this->data['totalTam'] = $get_total('totalTam');
-    $this->data['totalHis'] = $get_total('totalHis');
-    $this->data['totalGeo'] = $get_total('totalGeo');
-    $this->data['totalSoc'] = $get_total('totalSoc');
-    $this->data['totalGen'] = $get_total('totalGen');
-    $this->data['totalHeal'] = $get_total('totalHeal');
+    $has_totals = isset($totals) && is_object($totals);
+    $this->data['totalMonk'] = ($has_totals && isset($totals->totalMonk)) ? $totals->totalMonk : 0;
+    $this->data['totalLay'] = ($has_totals && isset($totals->totalLay)) ? $totals->totalLay : 0;
+    $this->data['totalCount'] = ($has_totals && isset($totals->totalCount)) ? $totals->totalCount : 0;
+    $this->data['totalSin'] = ($has_totals && isset($totals->totalSin)) ? $totals->totalSin : 0;
+    $this->data['totalPali'] = ($has_totals && isset($totals->totalPali)) ? $totals->totalPali : 0;
+    $this->data['totalSan'] = ($has_totals && isset($totals->totalSan)) ? $totals->totalSan : 0;
+    $this->data['totalThri'] = ($has_totals && isset($totals->totalThri)) ? $totals->totalThri : 0;
+    $this->data['totalEng'] = ($has_totals && isset($totals->totalEng)) ? $totals->totalEng : 0;
+    $this->data['totalMath'] = ($has_totals && isset($totals->totalMath)) ? $totals->totalMath : 0;
+    $this->data['totalTam'] = ($has_totals && isset($totals->totalTam)) ? $totals->totalTam : 0;
+    $this->data['totalHis'] = ($has_totals && isset($totals->totalHis)) ? $totals->totalHis : 0;
+    $this->data['totalGeo'] = ($has_totals && isset($totals->totalGeo)) ? $totals->totalGeo : 0;
+    $this->data['totalSoc'] = ($has_totals && isset($totals->totalSoc)) ? $totals->totalSoc : 0;
+    $this->data['totalGen'] = ($has_totals && isset($totals->totalGen)) ? $totals->totalGen : 0;
+    $this->data['totalHeal'] = ($has_totals && isset($totals->totalHeal)) ? $totals->totalHeal : 0;
 
     $this->data['report_url'] = site_url('report/studcal');
 

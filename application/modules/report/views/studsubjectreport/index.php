@@ -71,7 +71,7 @@
                                     </thead>
                                     <tbody>
     <?php
-    $fields = ['monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal'];
+    $fields = array('monk', 'lay', 'total', 'sin', 'pali', 'san', 'thri', 'eng', 'math', 'tam', 'his', 'geo', 'soc', 'gen', 'heal');
     $count = 1;
     foreach ($grades as $grade_label => $data) {
         ?>
