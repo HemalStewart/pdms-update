@@ -24,24 +24,53 @@ public function inbox()
         redirect('login');
     }
 
-    $user_id = $this->session->userdata('id');
+    $user_id = (int) $this->session->userdata('id');
 
-    $this->db->select('p.*, MAX(pr.is_read) AS is_read'); // Use MAX() to aggregate is_read
-    $this->db->from('postoffice AS p');
-    $this->db->join('postoffice_relationships AS pr', 'p.id = pr.message_id');
+    // IMPORTANT: On live, the DB schema can lag behind the code (missing
+    // `postoffice_relationships` or some columns). A normal CI DB error would
+    // exit the request and show as HTTP 500. To avoid that, we try the newer
+    // query with db_debug disabled, and fall back to a simpler query if it fails.
 
-    $this->db->where('p.receiver_id', $user_id);
-    $this->db->where('pr.owner_id', $user_id);
-    $this->db->where('pr.is_draft', 0);
-    $this->db->where('pr.is_trash', 0);
-    
-    $this->db->group_by('p.id'); // Group by the unique letter ID
-    
-    $this->db->order_by('p.created_at', 'DESC');
-    $query = $this->db->get();
+    $original_db_debug = $this->db->db_debug;
+    $this->db->db_debug = FALSE;
 
-    $this->data['inboxs'] = $query->result();
-    $this->data['inbox']  = TRUE;
+    $query = null;
+
+    try {
+        $latest_relations = '(SELECT message_id, MAX(id) AS rel_id'
+            . ' FROM postoffice_relationships'
+            . ' WHERE owner_id = ' . $user_id
+            . ' AND is_draft = 0'
+            . ' AND is_trash = 0'
+            . ' GROUP BY message_id) AS pr_latest';
+
+        $this->db->select('p.*, pr.is_read, pr.sender_id AS forwarded_by_id', false);
+        $this->db->from('postoffice AS p');
+        $this->db->join($latest_relations, 'pr_latest.message_id = p.id', 'inner', false);
+        $this->db->join('postoffice_relationships AS pr', 'pr.id = pr_latest.rel_id', 'inner');
+        $this->db->where('p.receiver_id', $user_id);
+        $this->db->order_by('p.created_at', 'DESC');
+        $query = $this->db->get();
+
+        if ($query === FALSE) {
+            throw new Exception('Inbox relationships query failed');
+        }
+    } catch (Throwable $e) {
+        // Many shared hosts enable mysqli exceptions; missing tables/columns would
+        // otherwise become a hard HTTP 500. Fall back to a simple query.
+        $this->db->reset_query();
+        $this->db->select('p.*, 1 AS is_read, NULL AS forwarded_by_id', false);
+        $this->db->from('postoffice AS p');
+        $this->db->where('p.receiver_id', $user_id);
+        $this->db->order_by('p.created_at', 'DESC');
+        $query = $this->db->get();
+    } finally {
+        $this->db->db_debug = $original_db_debug;
+    }
+
+    $this->data['inboxs'] = ($query && $query !== FALSE) ? $query->result() : array();
+
+    $this->data['inbox'] = TRUE;
 
     $this->layout->title($this->lang->line('inbox') . ' | ' . SMS);
     $this->layout->view('postoffice/inbox', $this->data);

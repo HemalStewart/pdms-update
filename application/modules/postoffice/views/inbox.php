@@ -27,6 +27,7 @@
                                                     <th><?php echo $this->lang->line('work_from'); ?></th>
                                                     <th><?php echo $this->lang->line('subject'); ?></th>
                                                     <th><?php echo $this->lang->line('letter_code'); ?></th>
+                                                    <th><?php echo $this->lang->line('status'); ?></th>
                                                     <th><?php echo $this->lang->line('action'); ?></th>
                                                 </tr>
                                             </thead>
@@ -45,6 +46,23 @@
                                                             </b></td>
                                                             <td><?php echo $obj->letter_code; ?></td>
                                                             <td>
+                                                                <?php if ($obj->status == 1): ?>
+                                                                    <span class="label label-warning">In Progress</span>
+                                                                <?php elseif ($obj->status == 2): ?>
+                                                                    <span class="label label-info">On Hold</span>
+                                                                <?php else: ?>
+                                                                    <span class="label label-success">Completed</span>
+                                                                <?php endif; ?>
+                                                                <?php if (!empty($obj->forwarded_by_id)) { ?>
+                                                                    <?php $forwarder = get_user_name_by_id($obj->forwarded_by_id); ?>
+                                                                    <?php $forward_label = ($obj->forwarded_by_id == $obj->created_by) ? 'Sent by' : 'Forwarded by'; ?>
+                                                                    <div class="text-muted" style="font-size: 11px;">
+                                                                        <?php echo $forward_label; ?>:
+                                                                        <?php echo htmlspecialchars($forwarder ? $forwarder->name : 'N/A'); ?>
+                                                                    </div>
+                                                                <?php } ?>
+                                                            </td>
+                                                            <td>
                                                                 <?php 
                                                                     // Conditional button color: yellow for unread, blue for read
                                                                     $button_class = ($obj->is_read == 0) ? 'btn-warning' : 'btn-info';
@@ -54,7 +72,7 @@
                                                         </tr>
                                                     <?php } ?>
                                                 <?php } else { ?>
-                                                    <tr><td colspan="7" class="text-center"><?php echo $this->lang->line('no_data_found'); ?></td></tr>
+                                                    <tr><td colspan="8" class="text-center"><?php echo $this->lang->line('no_data_found'); ?></td></tr>
                                                 <?php } ?>
                                             </tbody>
                                         </table>
