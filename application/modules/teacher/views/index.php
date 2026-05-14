@@ -119,6 +119,7 @@
                                             <?php } ?>
                                             <th><?php echo $this->lang->line('photo'); ?></th>
                                             <th><?php echo $this->lang->line('name'); ?></th>
+                                            <th><?php echo $this->lang->line('status'); ?></th>
                                             <th><?php echo $this->lang->line('responsibility'); ?></th>
 											<th><?php echo $this->lang->line('salary_type');?></th>
                                             <th><?php echo $this->lang->line('national_id'); ?>
@@ -176,6 +177,18 @@
                                                         <?php } ?>
                                                     </td>
                                                     <td><?php echo ucfirst($obj->name); ?></td>
+                                                    <td>
+                                                        <?php
+                                                            $is_active = (isset($obj->status) && (int) $obj->status === 1);
+                                                            $status_label = $is_active ? 'Active' : 'Inactive';
+                                                            $status_class = $is_active ? 'label-success' : 'label-danger';
+                                                            $status_title = '';
+                                                            if (!$is_active && !empty($obj->termination_reason)) {
+                                                                $status_title = ' title="' . htmlspecialchars($obj->termination_reason) . '"';
+                                                            }
+                                                            echo '<span class="label ' . $status_class . '"' . $status_title . '>' . $status_label . '</span>';
+                                                        ?>
+                                                    </td>
                                                     <td><?php echo $obj->responsibility; ?></td>
 							  						<td><?php echo '<span class="label ' . $color . '">' . $Status1 . '</span>'; ?></td>
                                                     <td><?php echo $obj->national_id; ?></td>
